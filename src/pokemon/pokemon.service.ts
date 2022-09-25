@@ -4,6 +4,8 @@ import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { Pokemon } from './entities/pokemon.entity';
 import {InjectModel} from '@nestjs/mongoose'
+import { GetPokemon } from './dto/get.pokemon.dto'; 
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PokemonService {
@@ -11,9 +13,11 @@ export class PokemonService {
   constructor(
 
     @InjectModel(Pokemon.name)
-    private readonly pokemonModel: Model<Pokemon>
-  
-  ){}
+    private readonly pokemonModel: Model<Pokemon>,
+    private readonly configService: ConfigService,
+  ){
+    console.log(configService.get<number>('PORT'))
+  }
 
   async create(createPokemonDto: CreatePokemonDto) {
     createPokemonDto.name = createPokemonDto.name.toLocaleLowerCase();
@@ -25,8 +29,8 @@ export class PokemonService {
     }
   }
 
-  findAll() {
-    return `This action returns all pokemon`; 
+  async findAll({limit=10,offset=0}:GetPokemon) {
+    return await this.pokemonModel.find().limit(limit).skip(offset).sort({nro:1}).select('-__v')
   }
 
   

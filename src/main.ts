@@ -8,6 +8,10 @@ async function bootstrap() {
     new ValidationPipe({
     whitelist: true,
     forbidNonWhitelisted: true,
+    transform:true,   //validaciones para numeros es params y body
+    transformOptions:{//validaciones para numeros es params y body
+      enableImplicitConversion: true//validaciones para numeros es params y body
+    }
     })
     );
   app.setGlobalPrefix('api/v2')
